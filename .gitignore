@@ -29,3 +29,7 @@ public/bower_components
 
 # secrets
 *.private.json
+
+# vim
+*.swp
+*~

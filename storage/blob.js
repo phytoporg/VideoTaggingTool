@@ -1,13 +1,17 @@
-﻿var azure = require('azure-storage');
+var azure = require('azure-storage');
 var config = require('../config');
 var url = require('url');
 
-var CONTAINER_NAME = 'vidoes';
-var URL_FORMAT = 'https://<storage-account-name>.blob.core.windows.net/<container-name>'
+var CONTAINER_NAME = 'videos';
+//var URL_FORMAT = 'https://<storage-account-name>.blob.core.windows.net/<container-name>'
+//    .replace('<storage-account-name>', config.storage.account)
+//    .replace('<container-name>', CONTAINER_NAME);
+var URL_FORMAT = 'http://127.0.0.1:10000/<storage-account-name>/<container-name>'
     .replace('<storage-account-name>', config.storage.account)
     .replace('<container-name>', CONTAINER_NAME);
 
-var blobSvc = azure.createBlobService(config.storage.account, config.storage.key);
+//var blobSvc = azure.createBlobService(config.storage.account, config.storage.key);
+var blobSvc = azure.createBlobService("UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://ipv4.fiddler");
 
 var cbUrl = config.auth.google.callbackURL,
   cbUrlElements = url.parse(cbUrl),
