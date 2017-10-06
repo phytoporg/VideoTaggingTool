@@ -18,7 +18,7 @@ var config = {
     storage: {
         account: localConfig.storage && localConfig.storage.account || process.env.STORAGE_ACCOUNT,
         key: localConfig.storage && localConfig.storage.key || process.env.STORAGE_KEY,
-        use_emulator: localConfig.storage && localConfig.storage.use_emulator || "false"
+        use_emulator: localConfig.storage && localConfig.storage.use_emulator == 'true' || false
     },
     auth: {
         google: {
