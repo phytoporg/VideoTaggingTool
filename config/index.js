@@ -17,7 +17,8 @@ var config = {
     },
     storage: {
         account: localConfig.storage && localConfig.storage.account || process.env.STORAGE_ACCOUNT,
-        key: localConfig.storage && localConfig.storage.key || process.env.STORAGE_KEY
+        key: localConfig.storage && localConfig.storage.key || process.env.STORAGE_KEY,
+        use_emulator: localConfig.storage && localConfig.storage.use_emulator || "false"
     },
     auth: {
         google: {
@@ -34,12 +35,14 @@ if (!config.sql.password) throw new Error('password for db was not provided, ple
 if (!config.sql.options.database) throw new Error('db name was not provided, please add DB_NAME to environment variables');
 
 
-if (!config.storage.account) throw new Error('storage account was not provided, please add STORAGE_ACCOUNT to environment variables');
-if (!config.storage.key) throw new Error('storage key was not provided, please add STORAGE_KEY to environment variables');
+if (!config.storage.use_emulator)
+{
+    if (!config.storage.account) throw new Error('storage account was not provided, please add STORAGE_ACCOUNT to environment variables');
+    if (!config.storage.key) throw new Error('storage key was not provided, please add STORAGE_KEY to environment variables');
+}
 
 if (!config.auth.google.clientID) throw new Error('google client Id was not provided, please add GOOGLE_CLIENT_ID to environment variables');
 if (!config.auth.google.clientSecret) throw new Error('google client secret was not provided, please add GOOGLE_CLIENT_SECRET to environment variables');
 if (!config.auth.google.callbackURL) throw new Error('google callback URL was not provided, please add GOOGLE_CALLBACK_URL to environment variables');
-
 
 module.exports = config;

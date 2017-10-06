@@ -3,15 +3,26 @@ var config = require('../config');
 var url = require('url');
 
 var CONTAINER_NAME = 'videos';
-//var URL_FORMAT = 'https://<storage-account-name>.blob.core.windows.net/<container-name>'
-//    .replace('<storage-account-name>', config.storage.account)
-//    .replace('<container-name>', CONTAINER_NAME);
-var URL_FORMAT = 'http://127.0.0.1:10000/<storage-account-name>/<container-name>'
-    .replace('<storage-account-name>', config.storage.account)
-    .replace('<container-name>', CONTAINER_NAME);
 
-//var blobSvc = azure.createBlobService(config.storage.account, config.storage.key);
-var blobSvc = azure.createBlobService("UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://ipv4.fiddler");
+var EMULATED_STORAGE_ACCOUNT = "devstoreaccount1"
+var EMULATED_STORAGE_KEY = "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
+
+if (config.storage.use_emulator)
+{
+  var URL_FORMAT = 'http://127.0.0.1:10000/<storage-account-name>/<container-name>'
+      .replace('<storage-account-name>', EMULATED_STORAGE_ACCOUNT)
+      .replace('<container-name>', CONTAINER_NAME);
+
+  var blobSvc = azure.createBlobService("UseDevelopmentStorage=true");
+}
+else 
+{
+  var URL_FORMAT = 'https://<storage-account-name>.blob.core.windows.net/<container-name>'
+      .replace('<storage-account-name>', config.storage.account)
+      .replace('<container-name>', CONTAINER_NAME);
+
+  var blobSvc = azure.createBlobService(config.storage.account, config.storage.key);
+}
 
 var cbUrl = config.auth.google.callbackURL,
   cbUrlElements = url.parse(cbUrl),
