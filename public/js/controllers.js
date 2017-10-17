@@ -420,7 +420,6 @@ videoTaggingAppControllers
 .controller('TagJobController', ['$scope', '$route', '$http', '$location', '$routeParams', '$timeout', 'state', function ($scope, $route, $http, $location, $routeParams, $timeout, state) {
 
         $scope.clearMessages();
-        var videoCtrl = document.getElementById('video-tagging');
         var jobId = $routeParams.id;
 
         $scope.ajaxStart();
@@ -428,28 +427,40 @@ videoTaggingAppControllers
         .success(function (jobData) {
             $scope.jobData = jobData;
             console.log('jobData', jobData);
-
-                videoCtrl.videoduration = jobData.video.DurationSeconds;
-                videoCtrl.videowidth = jobData.video.Width;
-                videoCtrl.videoheight = jobData.video.Height;
-                videoCtrl.framerate = jobData.video.FramesPerSecond;
-
-                videoCtrl.regiontype = jobData.job.Config.regiontype;
-                videoCtrl.multiregions = jobData.job.Config.multiregions;
-                videoCtrl.regionsize = jobData.job.Config.regionsize;
-
-                videoCtrl.inputtagsarray = jobData.job.Config.tags;
-
-                $http({ method: 'GET', url: '/api/jobs/' + $routeParams.id + '/frames' })
-                    .success(function (result) {
-                        videoCtrl.inputframes = result.frames;
-                        console.log(videoCtrl.inputframes)
-                        videoCtrl.src = '';
-                        console.log('video url', jobData.video.Url);
-                        videoCtrl.src = jobData.video.Url;
-                        $scope.ajaxCompleted();
-                    });
         });
+
+        $scope.submitTags = function () {
+            $scope.clearMessages();
+            var file = document.getElementById('inputFile').files[0];
+            console.log("FILE: ", file);
+
+            var reader = new FileReader();
+            reader.onload = function() {
+              var text = reader.result;
+              var allData = JSON.parse(text);
+
+              console.log("allData: ", allData);
+              console.log("Length: ", allData.frames.length);
+              for (var i in allData.frames) {
+                  frame = allData.frames[i];
+
+                  msg = {}
+                  msg.tags = frame
+
+                  console.log(frame);
+                  $http({ method: 'POST', url: '/api/jobs/' + jobId + '/frames/' + i, data: msg })
+                  .success(function (result) {
+                      console.log('frame saved successfully');
+                      $scope.clearMessages();
+                  })
+                  .error(function (err) {
+                      console.error('error', err);
+                      $scope.showError('error saving frame: ' + err.message || '');
+                  });
+              }
+            };
+            reader.readAsText(file);
+        }
 
         $scope.updateJobStatus = function (status) {
             $scope.clearMessages();
@@ -477,8 +488,8 @@ videoTaggingAppControllers
             msg.tags = inputObject.regions;
             $http({ method: 'POST', url: '/api/jobs/' + jobId + '/frames/' + inputObject.frameIndex, data: msg })
             .success(function (result) {
-                    console.log('frame saved successfully');
-                    $scope.clearMessages();
+                console.log('frame saved successfully');
+                $scope.clearMessages();
             })
             .error(function (err) {
                 console.error('error', err);
@@ -486,11 +497,21 @@ videoTaggingAppControllers
             });
         }
 
-        videoCtrl.addEventListener('onregionchanged', tagHandler);
+        $scope.download = function () {
+            var video = $scope.jobData.video;
+            var videoId = video.Id;
 
-        $scope.$on('$destroy', function() {
-            videoCtrl.removeEventListener('onregionchanged', tagHandler);
-        })
+            $http({ method: 'GET', url: '/api/videos/' + videoId + '/url-dl'})
+            .success(function (result) {
+                console.log('Result: ', result);
+                $scope.clearMessages();
+                window.open(result.url, '_blank');
+            })
+            .error(function (err) {
+                console.error('error', err);
+                $scope.showError('error saving frame: ' + err.message || '');
+            });
+        }
     }])
 
 .controller('UpsertVideoController', ['$scope', '$http', '$location', '$routeParams', function ($scope, $http, $location, $routeParams) {
@@ -602,6 +623,7 @@ videoTaggingAppControllers
         $scope.submitVideo = function () {
           $scope.clearMessages();
           var file = document.getElementById('inputFile').files[0];
+          console.log("FILE: ", file);
 
           $.get('/api/videos/' + $scope.videoId + '/url')
             .success(function (result) {
@@ -741,7 +763,7 @@ videoTaggingAppControllers
 
             function updateVideoAsLoaded() {
               $.ajax({
-                url: '/api/videos/' + $scope.videoId,
+                url: '/api/videos/' + $scope.videoId + "?filename=" + file.name,
                 type: "POST",
                 success: function (data, status) {
                   console.log('upload success!!!')

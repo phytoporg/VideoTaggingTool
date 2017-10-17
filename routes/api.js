@@ -42,12 +42,28 @@ module.exports = function () {
       var url = blob.getVideoUrlWithSasWrite(id);
       return res.json({ url: url });
     });
+
+    router.get('/videos/:id/url-dl', AdminLoggedIn, function (req, res) { 
+      var id = req.params.id;
+
+      db.getVideo(id, function (err, resp) {
+          if (err) return logError(err, res);
+
+          video = resp;
+          if (!video.FileName) return logError("No filename for video", res);
+
+          console.log('getting url for blob', id, video.FileName);
+          var url = blob.getVideoUrlWithSasDownload(id, video.FileName);
+          return res.json({ url: url });
+      });
+    });
     
     router.post('/videos/:id', AdminLoggedIn, function (req, res) {
       var id = req.params.id;
-      console.log('video uploaded', id);
+      var filename = req.params.filename;
+      console.log('video uploaded', id, filename);
         
-      db.updateVideoUploaded({id: id}, function(err) {
+      db.updateVideoUploaded({id: id, filename: filename}, function(err) {
           if (err) return logError(err, res);
           return res.json({ status: "OK" });
       });
@@ -110,13 +126,15 @@ module.exports = function () {
     
     // TODO: check job belong to editor / Admin mode
     router.post('/jobs/:id/frames/:index', EditorLoggedIn, function (req, res) {
+        console.log("req.body: ", req.body);
         var options = {
             tagsJson: req.body.tags
         };
         options.jobId = req.params.id;
         options.frameIndex = req.params.index;
         
-        console.log('posing frame index', options.frameIndex, 'for job', options.jobId);
+        console.log("options.tagsJson: ", options.tagsJson);
+        console.log('Posting frame index', options.frameIndex, 'for job', options.jobId);
         db.createOrModifyFrame(options, function (err) {
             if (err) return logError(err, res);
             res.json({});

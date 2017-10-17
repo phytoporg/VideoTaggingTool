@@ -153,6 +153,7 @@ CREATE TABLE [dbo].[Videos](
 	[FramesPerSecond] [real] NOT NULL,
 	[VideoJson] [ntext] NULL,
 	[VideoUploaded] [bit] NULL,
+	[FileName] [nvarchar](255) NULL,
  CONSTRAINT [PK_Videos] PRIMARY KEY CLUSTERED
 (
 	[Id] ASC
@@ -676,13 +677,15 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE PROCEDURE [dbo].[UpdateVideoUploaded]
-	@Id int = -1
+	@Id int = -1,
+	@FileName varchar(255)
 AS
 BEGIN
 
-		UPDATE [Videos]
-		SET	VideoUploaded = 1
-		WHERE	Id = @Id
+	UPDATE [Videos]
+	SET	VideoUploaded = 1,
+		FileName = @FileName
+	WHERE	Id = @Id
 END
 
 

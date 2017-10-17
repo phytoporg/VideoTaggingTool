@@ -63,7 +63,7 @@ function upload(opts, cb) {
   });
 }
 
-function getSAS(opts) {
+function getSAS(opts, headers = {}) {
 
   var permissions = opts.permissions || azure.BlobUtilities.SharedAccessPermissions.READ;
   var startDate = new Date();
@@ -78,7 +78,7 @@ function getSAS(opts) {
           Expiry: expiryDate
       }
   };
-  var sasToken = blobSvc.generateSharedAccessSignature(CONTAINER_NAME, opts.name + '', sharedAccessPolicy);
+  var sasToken = blobSvc.generateSharedAccessSignature(CONTAINER_NAME, opts.name + '', sharedAccessPolicy, headers);
   console.log('sasToken', sasToken);
   return sasToken;
 }
@@ -110,11 +110,25 @@ function getVideoUrlWithSasWrite(id) {
     permissions: azure.BlobUtilities.SharedAccessPermissions.WRITE});
 }
 
+function getVideoUrlWithSasDownload(id, filename) {
+  return getVideoUrl(id) + '?' + getSAS(
+    { 
+      name: id,
+      permissions: azure.BlobUtilities.SharedAccessPermissions.READ
+    },
+    {
+        contentType : "binary",
+        contentDisposition : "attachment; filename=" + filename
+    }
+  );
+}
+
 module.exports = {
     upload: upload,
     getVideoStream: getVideoStream,
     getVideoUrlWithSas: getVideoUrlWithSas,
-    getVideoUrlWithSasWrite: getVideoUrlWithSasWrite
+    getVideoUrlWithSasWrite: getVideoUrlWithSasWrite,
+    getVideoUrlWithSasDownload: getVideoUrlWithSasDownload
 };
 
 
