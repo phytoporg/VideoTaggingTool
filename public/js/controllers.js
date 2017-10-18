@@ -497,7 +497,7 @@ videoTaggingAppControllers
             });
         }
 
-        $scope.download = function () {
+        $scope.downloadVideo = function () {
             var video = $scope.jobData.video;
             var videoId = video.Id;
 
@@ -511,6 +511,12 @@ videoTaggingAppControllers
                 console.error('error', err);
                 $scope.showError('error saving frame: ' + err.message || '');
             });
+        }
+
+        $scope.downloadJson = function () {
+            var videoId = $scope.jobData.video.Id;
+            var url = '/api/videos/' + videoId + '/frames';
+            window.open(url, '_blank');
         }
     }])
 

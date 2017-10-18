@@ -9,24 +9,56 @@
             to generate a Json tags file, which you may subsequently submit.
         </p>
 
-        <p>
-            <B><a href ng-click="download()">Download</a></B>
-        </p>
+        <div class="col-xs-10">
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th><span class="glyphicon glyphicon-download"></span></th>
+                </tr>
+                </thead>
+                <tbody>
 
-        <div style="margin-top: 5em;">
-            <form id="uploadTagsForm" class="form-horizontal" role="form" ng-submit="submitTags()">
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="inputFile">TagsJson</label>
-                    <div class="col-sm-5">
-                        <input class="filestyle" id="inputFile" name="inputFile" type="file" accept=".json">
-                    </div>
-                    <div class="col-sm-3">
-                        <button type="submit" class="btn btn-clear">upload</button>
-                        <span ng-hide="!progress">{{ progress }}%</span>
-                    </div>
-                </div>
-            </form>
+                <tr>
+                    <td>
+                        <B><a href ng-click="downloadVideo()">Download Video</a></B>
+                    </td>
+                    <td>
+                        <B><a href ng-click="downloadJson()">Download TagsJson</a></B>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
         </div>
+
+        <div class="col-xs-10">
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th><span class="glyphicon glyphicon-upload"></span></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr>
+                    <td>
+                        <form id="uploadTagsForm" class="form-horizontal" role="form" ng-submit="submitTags()">
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="inputFile">TagsJson</label>
+                                <div class="col-sm-5">
+                                    <input class="filestyle" id="inputFile" name="inputFile" type="file" accept=".json">
+                                </div>
+                                <div class="col-sm-3">
+                                    <button type="submit" class="btn btn-clear">upload</button>
+                                    <span ng-hide="!progress">{{ progress }}%</span>
+                                </div>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+
 
         <p>{{ theJsonText }}</p>
 
