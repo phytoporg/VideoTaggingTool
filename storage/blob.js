@@ -63,8 +63,7 @@ function upload(opts, cb) {
   });
 }
 
-function getSAS(opts, headers = {}) {
-
+function getSAS(opts, headers) {
   var permissions = opts.permissions || azure.BlobUtilities.SharedAccessPermissions.READ;
   var startDate = new Date();
   var expiryDate = new Date(startDate);
