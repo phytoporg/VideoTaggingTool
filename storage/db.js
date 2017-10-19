@@ -1,12 +1,12 @@
 var tedious = require('tedious');
 var TYPES = tedious.TYPES;
 var configSql = require('../config').sql;
+var blob = require('./blob');
 
 var DBErrors = {
     duplicate: 2601
 }
 
-var blob = require('./blob');
 
 function connect(cb) {
     console.log('connecting to server', configSql.server);
