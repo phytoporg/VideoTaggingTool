@@ -4,8 +4,8 @@ var url = require('url');
 
 var CONTAINER_NAME = 'videos';
 
-var EMULATED_STORAGE_ACCOUNT = "devstoreaccount1"
-var EMULATED_STORAGE_KEY = "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
+var EMULATED_STORAGE_ACCOUNT = "devstoreaccount1";
+var EMULATED_STORAGE_KEY = "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==";
 
 if (config.storage.use_emulator)
 {
@@ -117,8 +117,8 @@ function getVideoUrlWithSasDownload(id, filename) {
       permissions: azure.BlobUtilities.SharedAccessPermissions.READ
     },
     {
-        contentType : "binary",
-        contentDisposition : "attachment; filename=" + filename
+      contentType : "binary",
+      contentDisposition : "attachment; filename=" + filename
     }
   );
 }
