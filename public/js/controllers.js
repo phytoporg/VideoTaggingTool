@@ -429,9 +429,11 @@ videoTaggingAppControllers
             console.log('jobData', jobData);
         });
 
+        var file = null;
+
         $scope.submitTags = function () {
+            file = document.getElementById('inputFile').files[0];
             $scope.clearMessages();
-            var file = document.getElementById('inputFile').files[0];
             console.log("FILE: ", file);
 
             var reader = new FileReader();
@@ -459,6 +461,27 @@ videoTaggingAppControllers
                   });
               }
             };
+
+            $scope.progress = 0;
+            var pos = 0;
+            reader.onprogress = function(progressEvt)
+            {
+                var length = progressEvt.loaded - pos;
+                pos += length;
+
+                var percentComplete = ((parseFloat(length) / parseFloat(file.size)) * 100).toFixed(2);
+                $scope.$apply(function () {
+                    $scope.progress = percentComplete;
+                    if (progress == 100) {
+                    setTimeout(function () {
+                        $scope.$apply(function () {
+                        $scope.progress = null;
+                        });
+                    }, 3000);
+                    }
+                });
+            }
+
             reader.readAsText(file);
         }
 
