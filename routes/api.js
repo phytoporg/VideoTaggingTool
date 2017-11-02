@@ -60,10 +60,11 @@ module.exports = function () {
     
     router.post('/videos/:id', AdminLoggedIn, function (req, res) {
       var id = req.params.id;
-      var filename = req.params.filename;
-      console.log('video uploaded', id, filename);
+      var filename = req.query.filename;
+      var md5 = req.query.md5;
+      console.log('video uploaded', id, filename, md5);
         
-      db.updateVideoUploaded({id: id, filename: filename}, function(err) {
+      db.updateVideoUploaded({id: id, filename: filename, md5: md5}, function(err) {
           if (err) return logError(err, res);
           return res.json({ status: "OK" });
       });

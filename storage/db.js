@@ -171,6 +171,7 @@ function updateVideoUploaded(req, cb) {
 
             request.addParameter('Id', TYPES.Int, req.id);
             request.addParameter('FileName', TYPES.NVarChar, req.filename);
+            request.addParameter('MD5', TYPES.NVarChar, req.md5);
             connection.callProcedure(request);
         }
         catch (err) {

@@ -154,6 +154,7 @@ CREATE TABLE [dbo].[Videos](
 	[VideoJson] [ntext] NULL,
 	[VideoUploaded] [bit] NULL,
 	[FileName] [nvarchar](255) NULL,
+	[MD5] [nvarchar](32) NULL,
  CONSTRAINT [PK_Videos] PRIMARY KEY CLUSTERED
 (
 	[Id] ASC
@@ -678,13 +679,15 @@ GO
 
 CREATE PROCEDURE [dbo].[UpdateVideoUploaded]
 	@Id int = -1,
-	@FileName varchar(255)
+	@FileName varchar(255),
+        @MD5 varchar(32)
 AS
 BEGIN
 
 	UPDATE [Videos]
 	SET	VideoUploaded = 1,
-		FileName = @FileName
+		FileName = @FileName,
+		MD5 = @MD5
 	WHERE	Id = @Id
 END
 
@@ -965,6 +968,3 @@ GO
 
 INSERT INTO [dbo].[JobStatus] ([Id] ,[Name] ,[Description]) VALUES (3 ,'Approved' ,'Job is Approved')
 GO
-
-
-

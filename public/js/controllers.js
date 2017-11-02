@@ -1,12 +1,10 @@
-﻿
-var videoTaggingAppControllers = angular.module('videoTaggingAppControllers', []);
-
+﻿var videoTaggingAppControllers = angular.module('videoTaggingAppControllers', []);
 videoTaggingAppControllers
 
 .factory('state', ['$http', '$rootScope', function ($http, $rootScope) {
     
     var jobStatus = {};
-    
+
     $http({ method: 'GET', url: '/api/jobs/statuses' })
         .success(function (result) {
             console.log('got statuses', result);
@@ -654,6 +652,8 @@ videoTaggingAppControllers
           var file = document.getElementById('inputFile').files[0];
           console.log("FILE: ", file);
 
+          spark = new SparkMD5.ArrayBuffer();
+
           $.get('/api/videos/' + $scope.videoId + '/url')
             .success(function (result) {
               console.log('url', result);
@@ -696,6 +696,8 @@ videoTaggingAppControllers
               if (evt.target.readyState == FileReader.DONE) { // DONE == 2
                 var uri = submitUri + '&comp=block&blockid=' + blockIds[blockIds.length - 1];
                 var requestData = new Uint8Array(evt.target.result);
+
+                spark.append(evt.target.result);
                 $.ajax({
                   url: uri,
                   type: "PUT",
@@ -792,7 +794,7 @@ videoTaggingAppControllers
 
             function updateVideoAsLoaded() {
               $.ajax({
-                url: '/api/videos/' + $scope.videoId + "?filename=" + file.name,
+                url: '/api/videos/' + $scope.videoId + "?filename=" + file.name + "&md5=" + spark.end(),
                 type: "POST",
                 success: function (data, status) {
                   console.log('upload success!!!')
